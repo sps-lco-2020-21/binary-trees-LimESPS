@@ -61,7 +61,23 @@ namespace BinaryTreesTest
             tree.Add(15);
             tree.Add(9);
             int count = tree.depth();
-            Assert.AreEqual(4, tree.depth());
+            Assert.AreEqual(4, tree.depth()); //works but I still need to have the code go both ways every time 2 children are encountered
+            
         }
+        [TestMethod]
+        public void sum()
+        {
+            TreeList tree = new TreeList();
+            tree.Add(5);
+            tree.Add(3);
+            tree.Add(20);
+            tree.Add(10);
+            tree.Add(15);
+            tree.Add(9);
+        
+            Assert.AreEqual(62, tree.sum()); //works but I still need to have the code go both ways every time 2 children are encountered
+
+        }
+
     }
 }

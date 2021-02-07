@@ -53,6 +53,10 @@ namespace BinaryTrees.Lib
             else
                 headnode.delete(val);
         }
+        public int sum()
+        {
+            return headnode.sum(headnode);
+        }
     }
     public class Node
     {
@@ -252,8 +256,8 @@ namespace BinaryTrees.Lib
        
         public int depth()
         {
-            int rightdepth = right_depth(1);
             int leftdepth = left_depth(1);
+            int rightdepth = right_depth(1);
             if (rightdepth > leftdepth)
                 return rightdepth;
             else
@@ -262,9 +266,10 @@ namespace BinaryTrees.Lib
 
         public int left_depth(int count)
         {
-            if (left != null)
+            Console.WriteLine("left" + value);
+            if (left != null && right == null)
                 return left.left_depth(count + 1);
-            else if (right != null)
+            else if (right != null && left == null)
                 return right.left_depth(count + 1);
             else
                 return count;
@@ -272,6 +277,7 @@ namespace BinaryTrees.Lib
 
         public int right_depth(int count)
         {
+            Console.WriteLine("right" + value);
             if (right != null)
                 return right.right_depth(count + 1);
             else if (left != null)
@@ -279,6 +285,15 @@ namespace BinaryTrees.Lib
             else
                 return count;
         }
+        public int sum(Node root)
+        {
+            if (root == null)
+            {
+                return 0;
+            }
+            return (root.value + sum(root.left) + sum(root.right));
+        }
+
     }
     
 }
