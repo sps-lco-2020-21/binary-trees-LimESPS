@@ -44,7 +44,7 @@ namespace BinaryTrees.Lib
             if (headnode == null)
                 return 0;
             else
-                return headnode.depth(0);
+                return headnode.depth();
         }
         public void delete(int val)
         {
@@ -123,54 +123,78 @@ namespace BinaryTrees.Lib
                 {
                     left = null;
                 }
-                if(left.right != null && left.left != null) //both children
+                else if(left.right != null && left.left != null) //both children
                 {
-                    delete_two(this, "two",this);
+                    //delete_two(left.right,this,"left",left);
+                    if (left.right.left == null)
+                    {
+                        left.right.left = left.left;
+                        left = left.right;
+                    }
+                    else
+                    {
+                    Node tempNode = findMin(left.right);
+                    tempNode.right = left.right;
+                    tempNode.left = left.left;
+                    left = tempNode;
+                    }
                 }
                 else //one child
                 {
                     if (left.left != null && left.right == null)
                     {
-                        this.right = right.left;
-                        right = null;
+                        left = left.left;
+                        //left.left = null;
                     }
                     else if (left.left == null && left.right != null)
                     {
-                        this.right = right.right;
-                        right = null;
+                        left = left.right;
+                        //left.right = null;
                     }
                     else
                         Debug.Assert(false, "function for one child does not work");
                 }
             }
-            if(right.value == val)
+            else if(right.value == val)
             {
                 if (right.right == null && right.left == null) //no children
                 {
                     right = null;
                 }
-                if (right.right != null && right.right != null) //both children
+                if (right.right != null && right.left != null) //both children
                 {
-                    delete_two(this, "two", this);
+                    //delete_two(right.right, this,"right",right);
+                    if (right.right.left == null) //same as left function however i have not run unit test for this, should work
+                    {
+                        right.right.left = left.left;
+                        right = right.right;
+                    }
+                    else
+                    {
+                        Node tempNode = findMin(right.right);
+                        tempNode.right = right.right;
+                        tempNode.left = right.left;
+                        right = tempNode;
+                    }
                 }
                 else //one child
                 {
                     if (right.left != null && right.right == null)
                     {
                         
-                        this.right = right.left;
-                        right = null;
+                        right = right.left;
+                        //right.left = null; this ends up deleting the left value of my new node, how do you delete the pointer of the deleted node? as the deleted node still points to a value
                     }
                     else if (right.left == null && right.right != null)
                     {
-                        this.right = right.right;
-                        right = null;
+                        right = right.right;
+                        //right.right = null;
                     }
                     else
                         Debug.Assert(false, "function for one child does not work");
                 }
             }
-            if (val < value)
+            else if (val < value)
             {
                 if(left == null)
                 {
@@ -191,39 +215,69 @@ namespace BinaryTrees.Lib
                     right.delete(val);
             }
         }
-        
-        
-        public void delete_two(Node n,string s,Node stored)
+        public Node findMin(Node entry)
         {
-            if(s == "two")
+            if (entry.left != null)
             {
-                if (n.left != null)
-                    delete_two(n.left, "two", stored);
-                else 
+                return findMin(entry.left);
+            }
+            else
+                return entry;
+        }
+        public void delete_two(Node n,Node constant,string pointer,Node delete)
+        {
+            if (n.left != null)
+                delete_two(n.left, constant,pointer,delete);
+            else
+            {
+                if(pointer == "right")
                 {
-                    stored.left = n.left;
-                    n.left = null;
-                }    
+                    n.left = delete.left;
+                    n.right = delete.right;
+                    constant.right = n; //havent completely disconnected deleted node, (deleted node still points to )
+                    delete.left = null;
+                    delete.right = null;
+                }
+                else if(pointer == "left")
+                {
+                    n.right = delete.right;
+                    n.left = delete.left;
+                    constant.left = n;
+                    delete.left = null;
+                    delete.right = null;
+                }
+            }
+        }
+       
+       
+        public int depth()
+        {
+            int rightdepth = right_depth(1);
+            int leftdepth = left_depth(1);
+            if (rightdepth > leftdepth)
+                return rightdepth;
+            else
+                return leftdepth;
+        }
 
-            }
-            if(s == "oneS")
-            {
-                stored.left = stored.left.left;
-                stored.left = null;
-            }
-            if(s == "oneB")
-            {
-                stored.right = stored.right.right;
-                stored.right = null;
-            }
-        }
-        public void remove(Node n) //actually removes node
+        public int left_depth(int count)
         {
-            
+            if (left != null)
+                return left.left_depth(count + 1);
+            else if (right != null)
+                return right.left_depth(count + 1);
+            else
+                return count;
         }
-        public int depth(int count)
+
+        public int right_depth(int count)
         {
-            return 1;
+            if (right != null)
+                return right.right_depth(count + 1);
+            else if (left != null)
+                return left.right_depth(count + 1);
+            else
+                return count;
         }
     }
     
